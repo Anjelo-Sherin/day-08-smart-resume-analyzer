@@ -1,0 +1,27 @@
+services:
+  api:
+    build:
+      context: ./apps/api
+      dockerfile: Dockerfile
+    ports:
+      - "8008:8008"
+    environment:
+      - PORT=8008
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
+      - GEMINI_MODEL=gemini-3.8-flash
+    volumes:
+      - api_data:/app/data
+
+  web:
+    build:
+      context: ./apps/web
+      dockerfile: Dockerfile
+    ports:
+      - "3008:3008"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:8008
+    depends_on:
+      - api
+
+volumes:
+  api_data:
